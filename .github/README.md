@@ -47,6 +47,7 @@ liegen die Änderungen von YuneBridge getrennt vom Upstream-Code:
 |---|---|
 | `app/yunebridge.gradle` | Flavor `yunebridge`: App-ID, Versionsschema, Signierung; erzeugt beim Bauen die Texte mit „YuneBridge“ statt „Gadgetbridge“ für alle Sprachen, ohne die Upstream-Übersetzungen zu ändern |
 | `app/src/yunebridge/` | Name, Icons, Splash-Screen, Farbpalette (`yb_colors.xml`), Theme-Ergänzungen (`yb_theme.xml`), Compose-Theme (`ui/theme/YuneTheme.kt`), Schrift Inter |
+| `app/src/yunebridge/translations/` | Ergänzende Übersetzungen für Texte, die Gadgetbridge noch nicht übersetzt hat; werden beim Bauen nur für fehlende Schlüssel verwendet |
 | `fastlane/metadata/` | Texte und Icon für das F-Droid-Repo |
 | `.github/` | Release- und F-Droid-Workflows, dieses README |
 | `scripts/` | Bau des F-Droid-Repos |

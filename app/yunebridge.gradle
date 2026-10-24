@@ -47,6 +47,11 @@ abstract class YbBrandingTask extends DefaultTask {
     @Input
     abstract SetProperty<String> getExcludedKeys()
 
+    @InputDirectory
+    @Optional
+    @PathSensitive(PathSensitivity.RELATIVE)
+    abstract DirectoryProperty getTranslations()
+
     @OutputDirectory
     abstract DirectoryProperty getOutputDir()
 
@@ -59,7 +64,7 @@ abstract class YbBrandingTask extends DefaultTask {
         final Set<String> skip = new HashSet<>(excludedKeys.get())
         flavorRes.get().asFile.eachFileRecurse { File f ->
             if (f.name.endsWith(".xml")) {
-                (f.getText("UTF-8") =~ /<string\s+name="([^"]+)"/).each { skip << it[1] }
+                (f.getText("UTF-8") =~ /<(?:string|plurals)\s+name="([^"]+)"/).each { skip << it[1] }
             }
         }
 
@@ -96,7 +101,42 @@ abstract class YbBrandingTask extends DefaultTask {
             }
         }
 
+        generateTranslations(out, skip, brandRe)
         generateAccentOverlays(out)
+    }
+
+    // Ergänzt Übersetzungen aus app/src/yunebridge/translations/values-XX.xml – aber nur für Texte,
+    // die Gadgetbridge in dieser Sprache noch nicht übersetzt hat. Kommt upstream eine eigene
+    // Übersetzung hinzu, gewinnt diese automatisch. Branding wie bei den übrigen Texten.
+    private void generateTranslations(final File out, final Set<String> skip, final def brandRe) {
+        final File dir = translations.get().asFile
+        if (!dir.isDirectory()) {
+            return
+        }
+        final def entryRe = ~/(?s)<(string|plurals)\s+name="([^"]+)"[^>]*>.*?<\/\1>/
+        dir.eachFileMatch(~/values-.+\.xml/) { File file ->
+            final String qualifier = file.name - ".xml"
+            final File mainFile = new File(mainRes.get().asFile, qualifier + "/strings.xml")
+            final Set<String> present = new HashSet<>()
+            if (mainFile.exists()) {
+                (mainFile.getText("UTF-8") =~ /<(?:string|plurals)\s+name="([^"]+)"/).each { present << it[1] }
+            }
+            final List<String> entries = []
+            (file.getText("UTF-8") =~ entryRe).each { m ->
+                final String name = m[2]
+                if (!present.contains(name) && !skip.contains(name)) {
+                    entries << "    " + m[0].replaceAll(brandRe, "YuneBridge")
+                }
+            }
+            if (!entries.isEmpty()) {
+                final File target = new File(out, qualifier)
+                target.mkdirs()
+                new File(target, "yb_translations.xml").setText(
+                        "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!-- Automatisch erzeugt von app/yunebridge.gradle – nicht bearbeiten -->\n" +
+                                "<resources xmlns:tools=\"http://schemas.android.com/tools\" xmlns:xliff=\"urn:oasis:names:tc:xliff:document:1.2\">\n" +
+                                entries.join("\n") + "\n</resources>\n", "UTF-8")
+            }
+        }
     }
 
     // Hängt jedes ThemeOverlay.App.Accent.<Farbe>.<Light|Dark> an YuneBridge.Extras.<Light|Dark>,
@@ -131,6 +171,7 @@ final def ybBranding = tasks.register("generateYunebridgeBranding", YbBrandingTa
     mainRes = layout.projectDirectory.dir("src/main/res")
     flavorRes = layout.projectDirectory.dir("src/yunebridge/res")
     excludedKeys.set(ybBrandingExcludes)
+    translations = layout.projectDirectory.dir("src/yunebridge/translations")
     outputDir = layout.buildDirectory.dir("generated/res/yunebridgeBranding")
 }
 

@@ -403,6 +403,19 @@ private fun Tile(
     }
 }
 
+/** Eigene Symbole für die weiteren Werte; unbekannte Widgets behalten ihr Gadgetbridge-Symbol. */
+private fun extraIcon(id: String): ImageVector? = when (id) {
+    "hrv", "bloodpressure" -> YuneIcons.Heart
+    "sleepscore" -> YuneIcons.Moon
+    "respiratoryrate" -> YuneIcons.Stress
+    "spo2", "hydration" -> YuneIcons.Data
+    "weight", "bmi", "bmr", "bodyfat", "bodywater", "musclemass" -> YuneIcons.Weight
+    "bodyenergy" -> YuneIcons.Flame
+    "pai", "vo2max" -> YuneIcons.Trends
+    "trainingload", "trainingreadiness" -> YuneIcons.Stopwatch
+    else -> null
+}
+
 /** Weitere Werte aus den Gadgetbridge-Widgets – nur solche mit Daten für den Tag. */
 @Composable
 private fun ExtrasSection(extras: List<ExtraMetric>) {
@@ -448,7 +461,12 @@ private fun ExtraTile(extra: ExtraMetric, model: TileModel, modifier: Modifier) 
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            Icon(painterResource(extra.widget.icon), contentDescription = null, tint = c.secondaryText, modifier = Modifier.size(17.dp))
+            val vector = extraIcon(extra.widget.id)
+            if (vector != null) {
+                Icon(vector, contentDescription = null, tint = c.secondaryText, modifier = Modifier.size(17.dp))
+            } else {
+                Icon(painterResource(extra.widget.icon), contentDescription = null, tint = c.secondaryText, modifier = Modifier.size(17.dp))
+            }
             Text(
                 stringResource(extra.widget.label),
                 style = MaterialTheme.typography.labelLarge,
