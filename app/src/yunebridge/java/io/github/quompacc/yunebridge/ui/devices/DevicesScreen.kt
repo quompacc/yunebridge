@@ -631,7 +631,7 @@ private fun ListRow(entry: CardEntry, showDivider: Boolean) {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    entry.title,
+                    entry.shortTitle,
                     style = MaterialTheme.typography.bodyLarge,
                     color = if (enabled) c.text else c.secondaryText,
                     modifier = Modifier.weight(1f).padding(vertical = 8.dp),
