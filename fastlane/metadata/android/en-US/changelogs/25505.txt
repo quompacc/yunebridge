@@ -1,0 +1,4 @@
+Polish:
+• Missing German translations added (about 1,200 texts, e.g. in charts, workouts and the health values)
+• Device card list uses short labels (Charts, Workouts)
+• Own icons for the additional health values

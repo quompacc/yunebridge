@@ -1,0 +1,4 @@
+Feinschliff:
+• Fehlende deutsche Übersetzungen ergänzt (rund 1.200 Texte, z. B. in Diagrammen, Workouts und bei den Gesundheitswerten)
+• Liste der Geräte-Karte mit kurzen Bezeichnungen (Diagramme, Workouts)
+• Eigene Symbole für die weiteren Gesundheitswerte
