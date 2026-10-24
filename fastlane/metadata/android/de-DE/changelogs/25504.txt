@@ -1,0 +1,5 @@
+Redesign fortgesetzt:
+• Übersicht: neuer Abschnitt „Weitere Werte“ mit HRV, SpO2, Atemfrequenz, VO2max, Trainingsbelastung und allen weiteren Werten deines Geräts
+• Workouts-Tab mit großer Überschrift
+• Neues Logo im Navigationsmenü und neue Illustrationen; „Diagramme“ statt „Charts“
+• Über-Seite verlinkt den Quellcode von YuneBridge

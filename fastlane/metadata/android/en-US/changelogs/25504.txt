@@ -1,0 +1,5 @@
+Redesign continued:
+• Overview: new section "More values" with HRV, SpO2, respiratory rate, VO2max, training load and every other value your device provides
+• Workouts tab with large title
+• New logo in the navigation menu and new illustrations
+• About page links to the YuneBridge source code
