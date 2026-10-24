@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    YuneBridge-Theme-Ergänzungen. Der Build-Schritt in app/yunebridge.gradle hängt
+    alle ThemeOverlay.App.Accent.*-Overlays aus main an YuneBridge.Extras.Light/Dark,
+    damit der Karten-Look für jede Akzentfarbe gilt. Der Standard-Akzent "Orange"
+    wird durch YuneBridge.Accent.Light/Dark (Yune-Orange) ersetzt.
+-->
+<resources>
+    <!-- Weiße Karten ohne Rahmen auf warmgrauem Grund, keine Schatten unter der Toolbar -->
+    <style name="YuneBridge.Extras.Light" parent="">
+        <item name="stat_tile_bg">@color/yb_card_light</item>
+        <item name="stat_tile_border">@android:color/transparent</item>
+        <item name="bar_shade">@null</item>
+    </style>
+    <style name="YuneBridge.Extras.Dark" parent="">
+        <item name="stat_tile_bg">@color/yb_card_dark</item>
+        <item name="stat_tile_border">@android:color/transparent</item>
+    </style>
+
+    <style name="YuneBridge.Accent.Light" parent="YuneBridge.Extras.Light">
+        <item name="tab_pill">#C4471A</item>
+        <item name="tab_pill_on">#FFFFFF</item>
+        <item name="subtab_pill">#FBE8DE</item>
+        <item name="subtab_pill_on">#9F3A14</item>
+    </style>
+    <style name="YuneBridge.Accent.Dark" parent="YuneBridge.Extras.Dark">
+        <item name="tab_pill">#FF854D</item>
+        <item name="tab_pill_on">#141715</item>
+        <item name="subtab_pill">#3A2419</item>
+        <item name="subtab_pill_on">#FFB18B</item>
+    </style>
+</resources>

@@ -95,6 +95,35 @@ abstract class YbBrandingTask extends DefaultTask {
                                 rootTag + "\n" + entries.join("\n") + "\n</resources>\n", "UTF-8")
             }
         }
+
+        generateAccentOverlays(out)
+    }
+
+    // Hängt jedes ThemeOverlay.App.Accent.<Farbe>.<Light|Dark> an YuneBridge.Extras.<Light|Dark>,
+    // damit der YuneBridge-Karten-Look für jede Akzentfarbe gilt. "Orange" (YuneBridge-Standard)
+    // wird vollständig durch YuneBridge.Accent.<Light|Dark> ersetzt.
+    private void generateAccentOverlays(final File out) {
+        final File styles = new File(mainRes.get().asFile, "values/styles.xml")
+        final def overlayRe = ~/(?s)<style\s+name="(ThemeOverlay\.App\.Accent\.([A-Za-z]+)\.(Light|Dark))"[^>]*>(.*?)<\/style>/
+        final List<String> entries = []
+        (styles.getText("UTF-8") =~ overlayRe).each { m ->
+            final String name = m[1]
+            final String accent = m[2]
+            final String variant = m[3]
+            if (accent == "Orange") {
+                entries << "    <style name=\"${name}\" parent=\"YuneBridge.Accent.${variant}\" />".toString()
+            } else {
+                entries << "    <style name=\"${name}\" parent=\"YuneBridge.Extras.${variant}\">${m[4]}</style>".toString()
+            }
+        }
+        if (entries.isEmpty()) {
+            throw new GradleException("YuneBridge: keine ThemeOverlay.App.Accent.* in main/res/values/styles.xml gefunden – Upstream hat die Akzent-Overlays umgebaut")
+        }
+        final File target = new File(out, "values")
+        target.mkdirs()
+        new File(target, "yb_accent_overlays.xml").setText(
+                "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!-- Automatisch erzeugt von app/yunebridge.gradle – nicht bearbeiten -->\n<resources>\n" +
+                        entries.join("\n") + "\n</resources>\n", "UTF-8")
     }
 }
 
@@ -112,6 +141,11 @@ androidComponents {
 }
 
 android {
+    // Standard-Akzentfarbe: andere Varianten behalten "red", YuneBridge nutzt "orange" (= Yune-Orange)
+    defaultConfig {
+        buildConfigField "String", "YB_DEFAULT_ACCENT", "\"red\""
+    }
+
     signingConfigs {
         if (ybHasKeystore) {
             yunebridge {
@@ -129,9 +163,37 @@ android {
             applicationId "io.github.quompacc.yunebridge"
             versionCode android.defaultConfig.versionCode * 100 + ybPatch
             versionName "${android.defaultConfig.versionName}-yb${ybPatch}"
+            buildConfigField "String", "YB_DEFAULT_ACCENT", "\"orange\""
             if (ybHasKeystore) {
                 signingConfig signingConfigs.yunebridge
             }
         }
     }
+}
+
+// Jetpack Compose für die neuen YuneBridge-Screens. Die Bibliotheken bekommt nur der
+// Flavor yunebridge; der Compose-Compiler ist an die Kotlin-Version aus libs.versions.toml gekoppelt.
+apply plugin: 'org.jetbrains.kotlin.plugin.compose'
+
+android {
+    buildFeatures {
+        compose = true
+    }
+}
+
+final def ybCatalog = extensions.getByType(VersionCatalogsExtension).named("libs")
+final def ybVersion = { String key -> ybCatalog.findVersion(key).get().requiredVersion }
+
+dependencies {
+    // Der Compose-Compiler läuft für alle Varianten und braucht dort die Runtime;
+    // UI-Bibliotheken bekommt nur yunebridge.
+    implementation platform("androidx.compose:compose-bom:2026.09.00")
+    implementation "androidx.compose.runtime:runtime"
+    yunebridgeImplementation platform("androidx.compose:compose-bom:2026.09.00")
+    yunebridgeImplementation "androidx.compose.material3:material3"
+    yunebridgeImplementation "androidx.compose.ui:ui"
+    yunebridgeImplementation "androidx.compose.ui:ui-tooling-preview"
+    yunebridgeImplementation "androidx.activity:activity-compose:${ybVersion('androidx-activity')}"
+    // collectAsStateWithLifecycle: Daten nur sammeln, solange ein Screen sichtbar ist (Akku)
+    yunebridgeImplementation "androidx.lifecycle:lifecycle-runtime-compose:${ybVersion('androidx-lifecycle')}"
 }

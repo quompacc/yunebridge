@@ -735,7 +735,7 @@ public class GBApplication extends Application {
     }
 
     public static final String PREF_ACCENT_COLOR = "pref_key_accent_color";
-    public static final String PREF_ACCENT_COLOR_DEFAULT = "red";
+    public static final String PREF_ACCENT_COLOR_DEFAULT = BuildConfig.YB_DEFAULT_ACCENT;
 
     /**
      * The ThemeOverlay for the user's chosen accent color preset (Settings > User interface).

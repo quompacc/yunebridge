@@ -46,7 +46,7 @@ liegen die Änderungen von YuneBridge getrennt vom Upstream-Code:
 | Pfad | Inhalt |
 |---|---|
 | `app/yunebridge.gradle` | Flavor `yunebridge`: App-ID, Versionsschema, Signierung; erzeugt beim Bauen die Texte mit „YuneBridge“ statt „Gadgetbridge“ für alle Sprachen, ohne die Upstream-Übersetzungen zu ändern |
-| `app/src/yunebridge/` | Name, Icons, Splash-Screen, eigene Ressourcen |
+| `app/src/yunebridge/` | Name, Icons, Splash-Screen, Farbpalette (`yb_colors.xml`), Theme-Ergänzungen (`yb_theme.xml`), Compose-Theme (`ui/theme/YuneTheme.kt`), Schrift Inter |
 | `fastlane/metadata/` | Texte und Icon für das F-Droid-Repo |
 | `.github/` | Release- und F-Droid-Workflows, dieses README |
 | `scripts/` | Bau des F-Droid-Repos |
@@ -78,6 +78,8 @@ YuneBridge ist wie Gadgetbridge freie Software unter der
 Urheberrechtshinweise und Lizenzen des eingebundenen Fremdcodes bleiben unverändert erhalten.
 Grafiken aus Gadgetbridge stehen unter den in [LICENSE.artwork](../LICENSE.artwork) genannten Lizenzen;
 App-Icon, Splash-Screen und Statusleisten-Symbol von YuneBridge sind Neuentwicklungen.
+Die Schrift [Inter](https://github.com/rsms/inter) steht unter der SIL Open Font License 1.1
+(siehe `app/src/yunebridge/assets/licenses/Inter-OFL.txt`).
 
 Der Dank für die Geräteunterstützung gebührt den Entwicklerinnen und Entwicklern von
 [Gadgetbridge](https://codeberg.org/Freeyourgadget/Gadgetbridge).
