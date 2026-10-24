@@ -671,7 +671,7 @@ public class ControlCenterv2 extends AppCompatActivity
             return switch (visibleTabs.get(position)) {
                 case DASHBOARD -> new DashboardFragment();
                 case WORKOUTS -> new WorkoutListFragment();
-                default -> new DevicesFragment();
+                default -> FlavorFragments.devices();
             };
         }
 

@@ -4,5 +4,22 @@
     <string name="yb_about_description">YuneBridge ist ein Fork von Gadgetbridge mit neu gestalteter Oberfläche: eine cloudfreie, copyleft-lizenzierte, freie Alternative zu proprietären Android-Gadget-Apps der Hersteller.</string>
     <string name="yb_running">YuneBridge läuft</string>
 
+    <plurals name="yb_devices_paired">
+        <item quantity="one">%d Gerät gekoppelt</item>
+        <item quantity="other">%d Geräte gekoppelt</item>
+    </plurals>
+    <string name="yb_devices_add">Gerät hinzufügen</string>
+    <string name="yb_devices_pair">Gerät koppeln</string>
+    <string name="yb_devices_empty_title">Noch kein Gerät</string>
+    <string name="yb_devices_empty_text">Kopple deine Smartwatch, dein Fitnessarmband oder deine Kopfhörer, um loszulegen.</string>
+    <string name="yb_device_more">Weitere Optionen</string>
+    <string name="yb_action_sync">Abgleichen</string>
+    <string name="yb_action_find">Finden</string>
+    <string name="yb_action_alarms">Wecker</string>
+    <string name="yb_action_reminders">Erinnerungen</string>
+    <string name="yb_action_apps">Apps</string>
+    <string name="yb_action_charts">Diagramme</string>
+    <string name="yb_action_workouts">Workouts</string>
+
     <string name="first_start_open_source_text">YuneBridge ist eine Open-Source-App auf Basis von Gadgetbridge, das von der Gemeinschaft für die Gemeinschaft entwickelt wird.\n\nYuneBridge enthält keine Werbung und kein Tracking. Deine Daten bleiben lokal auf deinem Android-Gerät – zu 100 % datenschutzfreundlich.\n\nDer Dank für die Geräteunterstützung gebührt den Gadgetbridge-Entwicklern. Auf der Gadgetbridge-Website findest du Dokumentation und Möglichkeiten zur Mitarbeit.</string>
 </resources>
