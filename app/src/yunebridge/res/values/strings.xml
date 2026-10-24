@@ -31,6 +31,31 @@
     <string name="yb_action_charts">Charts</string>
     <string name="yb_action_workouts">Workouts</string>
 
+    <!-- Übersicht -->
+    <string name="bottom_nav_dashboard">Overview</string>
+    <string name="yb_overview_title">Overview</string>
+    <string name="yb_overview_health">Health</string>
+    <string name="yb_today">Today</string>
+    <string name="yb_previous_day">Previous day</string>
+    <string name="yb_next_day">Next day</string>
+    <string name="yb_calendar">Open calendar</string>
+    <string name="yb_activity">Activity</string>
+    <string name="yb_daily_goals">Daily goals</string>
+    <string name="yb_steps">Steps</string>
+    <string name="yb_active_time">Active time</string>
+    <string name="yb_distance">Distance</string>
+    <string name="yb_minutes_value">%1$d min</string>
+    <string name="yb_km_value">%1$.1f km</string>
+    <string name="yb_no_data">No data</string>
+    <string name="yb_heart_rate">Heart rate</string>
+    <string name="yb_bpm">bpm</string>
+    <string name="yb_sleep">Sleep</string>
+    <string name="yb_hours_short">h</string>
+    <string name="yb_calories">Calories</string>
+    <string name="yb_active_kcal">%1$d kcal active</string>
+    <string name="yb_stress">Stress</string>
+    <string name="yb_of_100">of 100</string>
+
     <!-- Willkommensseite: YuneBridge ist ein Fork, die Community-Hinweise beziehen sich auf Gadgetbridge -->
     <string name="first_start_open_source_text">YuneBridge is an open source app based on Gadgetbridge, which is developed by the community, for the community.\n\nYuneBridge contains no ads and no tracking. It keeps your data locally on your Android device, so it is 100% privacy friendly.\n\nAll credit for device support goes to the Gadgetbridge developers. Visit the Gadgetbridge website for documentation and to contribute.</string>
 </resources>

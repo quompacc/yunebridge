@@ -22,11 +22,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.fragment.app.Fragment
+import io.github.quompacc.yunebridge.ui.LargeTitleFragment
 import io.github.quompacc.yunebridge.ui.theme.YuneTheme
 
 /** Geräte-Tab von YuneBridge (ersetzt DevicesFragment über FlavorFragments). */
-class YbDevicesFragment : Fragment() {
+class YbDevicesFragment : LargeTitleFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
         ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)

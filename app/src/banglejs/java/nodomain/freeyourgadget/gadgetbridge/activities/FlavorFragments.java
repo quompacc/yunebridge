@@ -10,6 +10,10 @@ public final class FlavorFragments {
     private FlavorFragments() {
     }
 
+    public static Fragment dashboard() {
+        return new DashboardFragment();
+    }
+
     public static Fragment devices() {
         return new DevicesFragment();
     }
