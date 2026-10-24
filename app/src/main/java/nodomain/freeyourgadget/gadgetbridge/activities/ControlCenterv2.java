@@ -670,7 +670,7 @@ public class ControlCenterv2 extends AppCompatActivity
         public Fragment createFragment(int position) {
             return switch (visibleTabs.get(position)) {
                 case DASHBOARD -> FlavorFragments.dashboard();
-                case WORKOUTS -> new WorkoutListFragment();
+                case WORKOUTS -> FlavorFragments.workouts();
                 default -> FlavorFragments.devices();
             };
         }

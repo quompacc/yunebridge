@@ -14,6 +14,10 @@ public final class FlavorFragments {
         return new DashboardFragment();
     }
 
+    public static Fragment workouts() {
+        return new nodomain.freeyourgadget.gadgetbridge.activities.workouts.WorkoutListFragment();
+    }
+
     public static Fragment devices() {
         return new DevicesFragment();
     }
