@@ -1,0 +1,3 @@
+First YuneBridge release, based on Gadgetbridge 0.95.1:
+• Own app ID – installable next to Gadgetbridge
+• New name, app icon, splash screen and status bar icon

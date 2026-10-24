@@ -69,7 +69,8 @@ public class FileUtils {
             "nodomain.freeyourgadget.gadgetbridge.nightly",
             "nodomain.freeyourgadget.gadgetbridge.nightly_nopebble",
             "com.espruino.gadgetbridge.banglejs",
-            "com.espruino.gadgetbridge.banglejs.nightly"
+            "com.espruino.gadgetbridge.banglejs.nightly",
+            "io.github.quompacc.yunebridge"
     );
 
     /**

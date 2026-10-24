@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="yb_about_activity_title">Über YuneBridge</string>
+    <string name="yb_about_description">YuneBridge ist ein Fork von Gadgetbridge mit neu gestalteter Oberfläche: eine cloudfreie, copyleft-lizenzierte, freie Alternative zu proprietären Android-Gadget-Apps der Hersteller.</string>
+    <string name="yb_running">YuneBridge läuft</string>
+</resources>

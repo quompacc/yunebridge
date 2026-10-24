@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Eigene Authority, damit YuneBridge neben Gadgetbridge installiert werden kann -->
+    <string translatable="false" name="pebble_content_provider">io.github.quompacc.yunebridge.pebble.provider</string>
+    <string translatable="false" name="app_name">@string/yb_application_name</string>
+    <string translatable="false" name="title_activity_controlcenter">@string/yb_application_name</string>
+    <string translatable="false" name="about_activity_title">@string/yb_about_activity_title</string>
+    <string translatable="false" name="about_description">@string/yb_about_description</string>
+    <string translatable="false" name="gadgetbridge_running">@string/yb_running</string>
+
+    <string translatable="false" name="yb_application_name">YuneBridge</string>
+    <string name="yb_about_activity_title">About YuneBridge</string>
+    <string name="yb_about_description">YuneBridge is a fork of Gadgetbridge with a redesigned interface: a cloudless, copylefted, libre replacement for closed source Android gadget apps from vendors.</string>
+    <string name="yb_running">YuneBridge running</string>
+</resources>

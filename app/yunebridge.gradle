@@ -1,0 +1,46 @@
+// YuneBridge: fork-spezifische Build-Konfiguration.
+// Liegt bewusst außerhalb von app/build.gradle (dort nur eine apply-Zeile),
+// damit Rebases auf Upstream möglichst konfliktfrei bleiben.
+//
+// Versionsschema: versionCode = Upstream-versionCode * 100 + ybPatch
+//                 versionName = <Upstream-versionName>-yb<ybPatch>
+// ybPatch bei jedem YuneBridge-Release auf derselben Upstream-Basis erhöhen,
+// bei einer neuen Upstream-Version wieder auf 1 setzen.
+final def ybPatch = 1
+
+final def ybLocalProps = new Properties()
+final def ybLocalPropsFile = rootProject.file("local.properties")
+if (ybLocalPropsFile.exists()) {
+    ybLocalPropsFile.withInputStream { ybLocalProps.load(it) }
+}
+final def ybProp = { String key -> System.getenv(key) ?: ybLocalProps.getProperty(key) }
+
+// Ohne Keystore entsteht eine unsignierte Release-APK (so baut auch F-Droid)
+final def ybKeystorePath = ybProp("KEYSTORE_FILE")
+final def ybKeystore = ybKeystorePath ? rootProject.file(ybKeystorePath) : null
+final def ybHasKeystore = ybKeystore != null && ybKeystore.exists()
+
+android {
+    signingConfigs {
+        if (ybHasKeystore) {
+            yunebridge {
+                storeFile ybKeystore
+                storePassword ybProp("KEYSTORE_PASSWORD")
+                keyAlias ybProp("KEY_ALIAS")
+                keyPassword ybProp("KEY_PASSWORD")
+            }
+        }
+    }
+
+    productFlavors {
+        yunebridge {
+            dimension "device_type"
+            applicationId "io.github.quompacc.yunebridge"
+            versionCode android.defaultConfig.versionCode * 100 + ybPatch
+            versionName "${android.defaultConfig.versionName}-yb${ybPatch}"
+            if (ybHasKeystore) {
+                signingConfig signingConfigs.yunebridge
+            }
+        }
+    }
+}

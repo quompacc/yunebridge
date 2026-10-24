@@ -277,6 +277,8 @@ android {
     }
 }
 
+apply from: 'yunebridge.gradle'
+
 androidComponents {
     onVariants(selector().all()) { variant ->
         variant.resValues.put(

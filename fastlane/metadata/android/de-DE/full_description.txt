@@ -1,0 +1,14 @@
+YuneBridge ist ein Fork von <a href="https://codeberg.org/Freeyourgadget/Gadgetbridge">Gadgetbridge</a> mit neu gestalteter, moderner Oberfläche. Die App spricht direkt mit deiner Smartwatch, deinem Fitnessarmband oder deinen Kopfhörern – ohne Hersteller-App, ohne Cloud und ohne Konto.
+
+Alle Funktionen von Gadgetbridge bleiben erhalten, unter anderem:
+<ul>
+<li>Aktivität, Schlaf, Herzfrequenz und weitere Gesundheitsdaten, gespeichert nur auf deinem Telefon</li>
+<li>Benachrichtigungen, Anrufe und Musiksteuerung auf der Uhr</li>
+<li>Installieren von Zifferblättern, Apps und Firmware-Dateien</li>
+<li>Wecker, Wetter und viele gerätespezifische Einstellungen</li>
+<li>Datenexport und Sicherung</li>
+</ul>
+
+YuneBridge lässt sich neben Gadgetbridge installieren. Geräteunterstützung, Protokolle und Hintergrunddienste stammen unverändert aus Gadgetbridge; YuneBridge ändert nur das Aussehen.
+
+YuneBridge ist freie Software unter der GNU Affero General Public License v3.0 oder später. Der Dank für die Geräteunterstützung gebührt den Entwicklerinnen und Entwicklern von Gadgetbridge.

@@ -1,0 +1,74 @@
+# Release-Build: bei jedem Tag vX.Y.Z-ybN eine signierte YuneBridge-APK bauen und als
+# GitHub-Release veröffentlichen. Der Release-Text stammt aus dem Fastlane-Changelog
+# des versionCodes. Anschließend wird das eigene F-Droid-Repo aktualisiert.
+#
+# Secrets (Settings → Secrets and variables → Actions):
+#   KEYSTORE_B64       base64 -w0 yunebridge.jks
+#   KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD
+
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Zu veröffentlichendes Tag (vX.Y.Z-ybN)'
+        type: string
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ inputs.tag || github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.ref }}
+          fetch-depth: 0
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Keystore aus Secret wiederherstellen
+        run: echo "${{ secrets.KEYSTORE_B64 }}" | base64 -d > "$RUNNER_TEMP/yunebridge.jks"
+
+      - name: Signierte Release-APK bauen
+        env:
+          KEYSTORE_FILE: ${{ runner.temp }}/yunebridge.jks
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon :app:assembleYunebridgeRelease
+          APK=$(find app/build/outputs/apk/yunebridge/release -name '*.apk' | head -1)
+          mv "$APK" "YuneBridge-${TAG#v}.apk"
+          sha256sum YuneBridge-*.apk > "YuneBridge-${TAG#v}.apk.sha256"
+
+      - name: GitHub-Release anlegen
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          UPSTREAM=$(grep -oP '^\s*versionCode \K[0-9]+' app/build.gradle | head -1)
+          PATCH=$(grep -oP 'ybPatch = \K[0-9]+' app/yunebridge.gradle)
+          CODE=$((UPSTREAM * 100 + PATCH))
+          NOTES=fastlane/metadata/android/en-US/changelogs/${CODE}.txt
+          [ -f "$NOTES" ] || NOTES=/dev/null
+          gh release create "$TAG" YuneBridge-*.apk YuneBridge-*.apk.sha256 \
+            --title "YuneBridge ${TAG#v}" --notes-file "$NOTES"
+
+  # Eigenes F-Droid-Repo mit dem neuen Release aktualisieren
+  fdroid:
+    needs: release
+    uses: ./.github/workflows/fdroid-repo.yml
+    secrets: inherit
