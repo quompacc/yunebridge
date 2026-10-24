@@ -1,0 +1,4 @@
+New design, first part:
+• Warm colour palette with YuneBridge orange, borderless cards, light and dark mode follow the system
+• Completely redesigned Devices screen: large title, device card with status, battery, labelled quick actions and a clear settings list
+• New icon set

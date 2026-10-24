@@ -1,0 +1,4 @@
+Neues Design, erster Teil:
+• Warme Farbpalette mit YuneBridge-Orange, Karten ohne Rahmen, Hell und Dunkel folgen dem System
+• Komplett neuer Geräte-Screen: große Überschrift, Geräte-Karte mit Status, Akku, beschrifteten Schnellaktionen und übersichtlicher Einstellungsliste
+• Neuer Symbolsatz
