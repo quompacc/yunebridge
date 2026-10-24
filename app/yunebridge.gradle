@@ -6,7 +6,7 @@
 //                 versionName = <Upstream-versionName>-yb<ybPatch>
 // ybPatch bei jedem YuneBridge-Release auf derselben Upstream-Basis erhöhen,
 // bei einer neuen Upstream-Version wieder auf 1 setzen.
-final def ybPatch = 2
+final def ybPatch = 3
 
 final def ybLocalProps = new Properties()
 final def ybLocalPropsFile = rootProject.file("local.properties")

@@ -1,0 +1,5 @@
+Neue Übersicht:
+• Aktivitätsringe für Schritte, Aktivzeit und Strecke mit deinen Tageszielen
+• Gesundheitskacheln für Herzfrequenz, Schlafphasen, Kalorien und Stress
+• Tagesnavigation mit Kalender; Antippen einer Kachel öffnet die Diagramme
+• Große Überschriften statt kleinem Titel in der Leiste; der Tab heißt jetzt Übersicht

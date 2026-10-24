@@ -1,0 +1,5 @@
+New Overview screen:
+• Activity rings for steps, active time and distance with your daily goals
+• Health tiles for heart rate, sleep stages, calories and stress
+• Day navigation with calendar; tap a tile to open the charts
+• Large titles instead of the small toolbar title; the tab is now called Overview
