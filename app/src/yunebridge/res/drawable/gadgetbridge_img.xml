@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- YuneBridge: ersetzt die Gadgetbridge-Illustration (Faust) durch die Uhr mit Herzrhythmus.
+     Größe und Einfärbung wie das Original, damit bestehende Layouts unverändert passen. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="300dp"
+    android:tint="#A07E7E7E"
+    android:viewportWidth="108"
+    android:viewportHeight="162">
+    <group android:translateY="27">
+        <path
+            android:pathData="M47,34h14a11,11 0,0 1,11 11v18a11,11 0,0 1,-11 11h-14a11,11 0,0 1,-11 -11v-18a11,11 0,0 1,11 -11zM43,34l1.6,-9.5h18.8L65,34M43,74l1.6,9.5h18.8L65,74M77,50.5v7"
+            android:strokeColor="#FFFFFFFF"
+            android:strokeWidth="2.2"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M42,55h5.5l3.5,-8 5,15 3.5,-7H66"
+            android:strokeColor="#FFFFFFFF"
+            android:strokeWidth="2.2"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
+    </group>
+</vector>

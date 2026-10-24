@@ -139,7 +139,10 @@ class OverviewViewModel : ViewModel() {
             restingHeartRate = hr?.resting?.takeIf { it > 0 },
             heartRateLine = hr?.line,
             stress = stress,
-            chartsDevice = devices.firstOrNull { it.deviceCoordinator.supportsActivityTracking(it) },
+            // Bevorzugt das verbundene Gerät, sonst das erste mit Aktivitätsdaten
+            chartsDevice = devices.filter { it.deviceCoordinator.supportsActivityTracking(it) }
+                .sortedByDescending { it.isInitialized }
+                .firstOrNull(),
             extras = loadExtras(day, devices),
         )
     }

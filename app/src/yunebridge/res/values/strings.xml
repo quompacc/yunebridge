@@ -9,6 +9,11 @@
     <string translatable="false" name="gadgetbridge_running">@string/yb_running</string>
 
     <string translatable="false" name="yb_application_name">YuneBridge</string>
+
+    <!-- Über-Seite: Quellcode von YuneBridge (AGPL), Gadgetbridge als Ursprungsprojekt -->
+    <string name="homepage_url" translatable="false">Gadgetbridge: <a href="https://gadgetbridge.org/">https://gadgetbridge.org/</a></string>
+    <string name="codeberg_url" translatable="false">Code: <a href="https://github.com/quompacc/yunebridge">https://github.com/quompacc/yunebridge</a></string>
+    <string name="fdroid_url" translatable="false">F-Droid: <a href="https://github.com/quompacc/yunebridge#installation-über-f-droid">https://github.com/quompacc/yunebridge</a></string>
     <string name="yb_about_activity_title">About YuneBridge</string>
     <string name="yb_about_description">YuneBridge is a fork of Gadgetbridge with a redesigned interface: a cloudless, copylefted, libre replacement for closed source Android gadget apps from vendors.</string>
     <string name="yb_running">YuneBridge running</string>
