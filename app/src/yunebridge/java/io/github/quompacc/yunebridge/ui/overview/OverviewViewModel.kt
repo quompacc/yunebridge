@@ -36,6 +36,7 @@ import nodomain.freeyourgadget.gadgetbridge.widgets.WidgetInstance
 import nodomain.freeyourgadget.gadgetbridge.widgets.WidgetRegistry
 import nodomain.freeyourgadget.gadgetbridge.widgets.WidgetVariant
 import nodomain.freeyourgadget.gadgetbridge.widgets.impl.HeartRateWidget
+import nodomain.freeyourgadget.gadgetbridge.widgets.impl.MetricWidget
 import nodomain.freeyourgadget.gadgetbridge.widgets.impl.StressWidget
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
@@ -62,7 +63,15 @@ data class OverviewData(
     val stress: Int?,
     /** Gerät für die Diagramme beim Antippen einer Kachel. */
     val chartsDevice: GBDevice?,
+    /** Weitere Werte, die die Geräte liefern (HRV, SpO2, Gewicht …). */
+    val extras: List<ExtraMetric> = emptyList(),
 )
+
+/** Geladene Daten eines Gadgetbridge-Widgets; das Anzeige-Modell entsteht in der UI (Sprache/Context). */
+class ExtraMetric(val widget: MetricWidget<*>, val config: WidgetConfig, val data: Any?)
+
+/** Werte, die die Übersicht schon selbst zeigt. */
+private val SHOWN_IN_OVERVIEW = setOf("steps", "distance", "activetime", "activecalories", "calories", "heartrate", "sleep", "stress")
 
 /**
  * Lädt die Tageswerte lesend über die Datenklassen von Gadgetbridge (WidgetDataScope).
@@ -131,7 +140,23 @@ class OverviewViewModel : ViewModel() {
             heartRateLine = hr?.line,
             stress = stress,
             chartsDevice = devices.firstOrNull { it.deviceCoordinator.supportsActivityTracking(it) },
+            extras = loadExtras(day, devices),
         )
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private suspend fun loadExtras(day: LocalDate, devices: List<GBDevice>): List<ExtraMetric> {
+        val result = mutableListOf<ExtraMetric>()
+        for (widget in WidgetRegistry.available().filterIsInstance<MetricWidget<*>>()) {
+            if (widget.id in SHOWN_IN_OVERVIEW) continue
+            val supported = devices.filter { widget.isSupportedBy(it) }
+            if (supported.isEmpty()) continue
+            val config = config(widget.id, WidgetVariant.GAUGE)
+            val scope = WidgetDataScope(DashboardQuery.forDay(day), supported)
+            val data = safe<Any?>(NOT_LOADED) { (widget as MetricWidget<Any?>).loadData(scope, config) }
+            if (data !== NOT_LOADED) result += ExtraMetric(widget, config, data)
+        }
+        return result
     }
 
     private fun config(typeId: String, variant: WidgetVariant) = WidgetConfig(
@@ -151,5 +176,6 @@ class OverviewViewModel : ViewModel() {
 
     companion object {
         private val LOG = LoggerFactory.getLogger(OverviewViewModel::class.java)
+        private val NOT_LOADED = Any()
     }
 }

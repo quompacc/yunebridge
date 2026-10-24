@@ -47,6 +47,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -61,6 +62,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -85,6 +87,9 @@ import nodomain.freeyourgadget.gadgetbridge.R
 import nodomain.freeyourgadget.gadgetbridge.activities.charts.ActivityChartsActivity
 import nodomain.freeyourgadget.gadgetbridge.activities.dashboard.DashboardCalendarActivity
 import nodomain.freeyourgadget.gadgetbridge.impl.GBDevice
+import nodomain.freeyourgadget.gadgetbridge.widgets.GaugeSpec
+import nodomain.freeyourgadget.gadgetbridge.widgets.StatusLine
+import nodomain.freeyourgadget.gadgetbridge.widgets.TileModel
 import java.text.NumberFormat
 import java.time.Instant
 import java.time.LocalDate
@@ -188,6 +193,7 @@ fun OverviewScreen(activity: FragmentActivity, viewModel: OverviewViewModel) {
                 )
             }
             item(key = "health") { HealthGrid(d, activity) }
+            item(key = "extras") { ExtrasSection(d.extras) }
         }
     }
 }
@@ -394,6 +400,110 @@ private fun Tile(
             color = c.text,
             maxLines = 1,
         )
+    }
+}
+
+/** Weitere Werte aus den Gadgetbridge-Widgets – nur solche mit Daten für den Tag. */
+@Composable
+private fun ExtrasSection(extras: List<ExtraMetric>) {
+    val c = Yune.colors
+    val context = LocalContext.current
+    val empty = stringResource(R.string.stats_empty_value)
+    val tiles = remember(extras) {
+        extras.mapNotNull { e ->
+            runCatching { e to e.widget.tileModelUnsafe(context, e.config, e.data) }.getOrNull()
+        }.filter { (_, model) -> model.value.toString().trim() != empty && model.value.isNotBlank() }
+    }
+    if (tiles.isEmpty()) return
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Text(
+            stringResource(R.string.yb_overview_more),
+            style = MaterialTheme.typography.headlineSmall,
+            color = c.text,
+            modifier = Modifier.padding(start = 4.dp, top = 12.dp, bottom = 4.dp),
+        )
+        tiles.chunked(2).forEach { row ->
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                row.forEach { (extra, model) -> ExtraTile(extra, model, Modifier.weight(1f)) }
+                if (row.size == 1) Spacer(Modifier.weight(1f))
+            }
+        }
+    }
+}
+
+@Composable
+private fun ExtraTile(extra: ExtraMetric, model: TileModel, modifier: Modifier) {
+    val c = Yune.colors
+    val status = when (val s = model.status) {
+        is StatusLine.Text -> s.text.toString()
+        is StatusLine.Chip -> s.text.toString()
+        null -> null
+    }
+    Column(
+        modifier = modifier
+            .height(132.dp)
+            .clip(RoundedCornerShape(20.dp))
+            .background(c.card)
+            .padding(14.dp),
+        verticalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Icon(painterResource(extra.widget.icon), contentDescription = null, tint = c.secondaryText, modifier = Modifier.size(17.dp))
+            Text(
+                stringResource(extra.widget.label),
+                style = MaterialTheme.typography.labelLarge,
+                color = c.secondaryText,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+        GaugeBar(model.gauge)
+        Column {
+            Text(
+                buildAnnotatedString {
+                    withStyle(SpanStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold, letterSpacing = (-0.4).sp)) {
+                        append(model.value.toString())
+                    }
+                    model.valueSuffix?.let { withStyle(SpanStyle(fontSize = 13.sp, color = c.secondaryText)) { append(" $it") } }
+                },
+                style = MaterialTheme.typography.titleMedium,
+                color = c.text,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            status?.let {
+                Text(it, style = MaterialTheme.typography.bodySmall, color = c.secondaryText, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            }
+        }
+    }
+}
+
+@Composable
+private fun GaugeBar(gauge: GaugeSpec) {
+    val c = Yune.colors
+    when (gauge) {
+        is GaugeSpec.Progress -> if (gauge.fraction >= 0f) ProgressBar(gauge.fraction, c.tint) else Spacer(Modifier.height(10.dp))
+        is GaugeSpec.Zones -> {
+            val total = gauge.segments.sum().takeIf { it > 0f } ?: 1f
+            var start = 0f
+            val active = gauge.segments.indices.firstOrNull { i ->
+                val end = start + gauge.segments[i]
+                (gauge.marker in start..end).also { start = end }
+            }
+            Row(Modifier.fillMaxWidth().height(10.dp), horizontalArrangement = Arrangement.spacedBy(3.dp)) {
+                gauge.segments.forEachIndexed { i, w ->
+                    if (w > 0f) {
+                        Box(
+                            Modifier
+                                .weight(w / total)
+                                .height(10.dp)
+                                .clip(RoundedCornerShape(5.dp))
+                                .background(Color(gauge.colors[i % gauge.colors.size]).copy(alpha = if (active == null || i == active) 1f else 0.3f))
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 

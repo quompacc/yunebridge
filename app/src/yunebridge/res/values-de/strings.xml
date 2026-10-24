@@ -24,6 +24,7 @@
     <string name="bottom_nav_dashboard">Übersicht</string>
     <string name="yb_overview_title">Übersicht</string>
     <string name="yb_overview_health">Gesundheit</string>
+    <string name="yb_overview_more">Weitere Werte</string>
     <string name="yb_today">Heute</string>
     <string name="yb_previous_day">Vorheriger Tag</string>
     <string name="yb_next_day">Nächster Tag</string>

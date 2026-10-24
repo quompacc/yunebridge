@@ -84,6 +84,12 @@ abstract class MetricWidget<D> : GBWidget<D> {
     protected abstract fun model(context: Context, config: WidgetConfig, data: D): TileModel
 
     /**
+     * [model] for loaded data of unknown type, for screens that draw the tiles themselves.
+     */
+    @Suppress("UNCHECKED_CAST")
+    fun tileModelUnsafe(context: Context, config: WidgetConfig, data: Any?): TileModel = model(context, config, data as D)
+
+    /**
      * The tile for a day without data.
      */
     protected fun emptyModel(context: Context, gauge: GaugeSpec = GaugeSpec.EMPTY, chart: MiniChart? = null) = TileModel(

@@ -35,6 +35,7 @@
     <string name="bottom_nav_dashboard">Overview</string>
     <string name="yb_overview_title">Overview</string>
     <string name="yb_overview_health">Health</string>
+    <string name="yb_overview_more">More values</string>
     <string name="yb_today">Today</string>
     <string name="yb_previous_day">Previous day</string>
     <string name="yb_next_day">Next day</string>
