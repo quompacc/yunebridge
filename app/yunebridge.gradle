@@ -20,6 +20,97 @@ final def ybKeystorePath = ybProp("KEYSTORE_FILE")
 final def ybKeystore = ybKeystorePath ? rootProject.file(ybKeystorePath) : null
 final def ybHasKeystore = ybKeystore != null && ybKeystore.exists()
 
+// Branding der Texte: erzeugt beim Bauen aus allen values*/strings.xml von main
+// Overrides, in denen "Gadgetbridge" durch "YuneBridge" ersetzt ist. Die Upstream-
+// Dateien bleiben unverändert, neue oder geänderte Upstream-Texte werden automatisch
+// mit angepasst. Ausgelassen werden:
+//  - Texte, die bewusst das Gadgetbridge-Projekt meinen (ybBrandingExcludes)
+//  - Texte der anderen Varianten (Bangle.js, Nightly)
+//  - Keys, die app/src/yunebridge/res selbst definiert (dort von Hand gepflegt)
+//  - URLs und Domains (…/Gadgetbridge, Gadgetbridge.org)
+final def ybBrandingExcludes = [
+        "codeberg_url",                        // Link zum Upstream-Quellcode
+        "pref_title_weather_summary",          // verweist auf die Gadgetbridge-Website
+        "miband_firmware_suggest_whitelist",   // Meldung an die Gadgetbridge-Entwickler
+        "internet_helper_permission_summary",  // Name der Zusatz-App "Internet Helper for Gadgetbridge"
+]
+
+abstract class YbBrandingTask extends DefaultTask {
+    @InputDirectory
+    @PathSensitive(PathSensitivity.RELATIVE)
+    abstract DirectoryProperty getMainRes()
+
+    @InputDirectory
+    @PathSensitive(PathSensitivity.RELATIVE)
+    abstract DirectoryProperty getFlavorRes()
+
+    @Input
+    abstract SetProperty<String> getExcludedKeys()
+
+    @OutputDirectory
+    abstract DirectoryProperty getOutputDir()
+
+    @TaskAction
+    void generate() {
+        final File out = outputDir.get().asFile
+        out.deleteDir()
+        out.mkdirs()
+
+        final Set<String> skip = new HashSet<>(excludedKeys.get())
+        flavorRes.get().asFile.eachFileRecurse { File f ->
+            if (f.name.endsWith(".xml")) {
+                (f.getText("UTF-8") =~ /<string\s+name="([^"]+)"/).each { skip << it[1] }
+            }
+        }
+
+        final def stringRe = ~/(?s)<string\s+name="([^"]+)"([^>]*)>(.*?)<\/string>/
+        // Nur das Wort, nicht in URLs/Pfaden oder als Domain
+        final def brandRe = ~/(?<![\w\/.@])Gadgetbridge(?![\w\/]|\.(?:org|com))/
+
+        mainRes.get().asFile.eachDir { File dir ->
+            final File src = new File(dir, "strings.xml")
+            if (!dir.name.startsWith("values") || !src.exists()) {
+                return
+            }
+            final String text = src.getText("UTF-8")
+            final List<String> entries = []
+            (text =~ stringRe).each { m ->
+                final String name = m[1]
+                final String body = m[3]
+                if (skip.contains(name) || name ==~ /.*_(banglejs_main|banglejs_nightly|main_nightly|main_nopebble)/) {
+                    return
+                }
+                final String replaced = body.replaceAll(brandRe, "YuneBridge")
+                if (replaced != body) {
+                    entries << "    <string name=\"${name}\"${m[2]}>${replaced}</string>".toString()
+                }
+            }
+            if (!entries.isEmpty()) {
+                final def root = (text =~ /<resources[^>]*>/)
+                final String rootTag = root.find() ? root.group() : "<resources>"
+                final File target = new File(out, dir.name)
+                target.mkdirs()
+                new File(target, "strings.xml").setText(
+                        "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!-- Automatisch erzeugt von app/yunebridge.gradle – nicht bearbeiten -->\n" +
+                                rootTag + "\n" + entries.join("\n") + "\n</resources>\n", "UTF-8")
+            }
+        }
+    }
+}
+
+final def ybBranding = tasks.register("generateYunebridgeBranding", YbBrandingTask) {
+    mainRes = layout.projectDirectory.dir("src/main/res")
+    flavorRes = layout.projectDirectory.dir("src/yunebridge/res")
+    excludedKeys.set(ybBrandingExcludes)
+    outputDir = layout.buildDirectory.dir("generated/res/yunebridgeBranding")
+}
+
+androidComponents {
+    onVariants(selector().withFlavor(new kotlin.Pair("device_type", "yunebridge"))) { variant ->
+        variant.sources.res?.addGeneratedSourceDirectory(ybBranding, { it.outputDir })
+    }
+}
+
 android {
     signingConfigs {
         if (ybHasKeystore) {
