@@ -50,6 +50,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
@@ -443,6 +444,15 @@ public class ControlCenterv2 extends AppCompatActivity
             return false;
         });
 
+        // The pager itself never scrolls vertically, so ask the page that is shown whether its
+        // content can still scroll up. Otherwise every downward swipe would start a refresh.
+        swipeLayout.setOnChildScrollUpCallback((parent, child) -> {
+            final RecyclerView pages = (RecyclerView) viewPager.getChildAt(0);
+            final RecyclerView.LayoutManager layoutManager = pages.getLayoutManager();
+            final View page = layoutManager != null ? layoutManager.findViewByPosition(viewPager.getCurrentItem()) : null;
+            return canScrollUpInside(page);
+        });
+
         // Set pull-down-to-refresh action
         swipeLayout.setEnabled(prefs.refreshOnSwipe());
         swipeLayout.setOnRefreshListener(() -> {
@@ -504,6 +514,27 @@ public class ControlCenterv2 extends AppCompatActivity
         }
 
         GBApplication.deviceService().requestDeviceInfo();
+    }
+
+    /**
+     * Whether a visible view below the given one can still scroll up.
+     */
+    private static boolean canScrollUpInside(final View view) {
+        if (view == null || view.getVisibility() != View.VISIBLE) {
+            return false;
+        }
+        if (view.canScrollVertically(-1)) {
+            return true;
+        }
+        if (view instanceof ViewGroup) {
+            final ViewGroup group = (ViewGroup) view;
+            for (int i = 0; i < group.getChildCount(); i++) {
+                if (canScrollUpInside(group.getChildAt(i))) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**

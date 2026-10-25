@@ -1,0 +1,2 @@
+Bug fix:
+• Dashboard: after scrolling down you can scroll back up again instead of always triggering a refresh

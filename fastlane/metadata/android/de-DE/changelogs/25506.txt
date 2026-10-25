@@ -1,0 +1,2 @@
+Fehlerbehebung:
+• Übersicht: Nach dem Herunterscrollen lässt sich wieder nach oben scrollen, statt dass jedes Mal die Aktualisierung startet
